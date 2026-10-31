@@ -62,3 +62,39 @@ def page_not_found(e):
         ),
         404,
     )
+
+
+CRUD = ["can_list", "can_show", "can_add", "can_edit", "can_delete"]
+PERMISOS_VENDEDOR = {
+    # vistas
+    "ClienteView": CRUD,
+    "PedidoView": CRUD,
+    "DetallePedidoView": CRUD,
+    "PagoView": CRUD,
+    "ProductoView": ["can_list", "can_show"],
+    # menús (por etiqueta)
+    "Clientes": ["menu_access"],
+    "Ventas": ["menu_access"],
+    "Pedidos": ["menu_access"],
+    "Detalles de pedido": ["menu_access"],
+    "Pagos": ["menu_access"],
+    # perfil
+    "UserDBModelView": ["can_userinfo", "userinfoedit", "resetmypassword"],
+    "UserInfoEditView": ["can_this_form_get", "can_this_form_post"],
+    "ResetMyPasswordView": ["can_this_form_get", "can_this_form_post"],
+}
+
+
+def crear_rol_vendedor():
+    sm = appbuilder.sm
+    rol = sm.find_role("Vendedor") or sm.add_role("Vendedor")
+    for vista, perms in PERMISOS_VENDEDOR.items():
+        for perm in perms:
+            pv = sm.find_permission_view_menu(perm, vista)
+            if not pv:
+                print(f"[permiso no encontrado] {perm} / {vista}")
+            elif pv not in rol.permissions:
+                sm.add_permission_role(rol, pv)
+
+
+crear_rol_vendedor()
