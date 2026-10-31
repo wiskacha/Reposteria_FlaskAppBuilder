@@ -27,13 +27,41 @@ class ClienteView(ModelView):
 class DetallePedidoView(ModelView):
     datamodel = SQLAInterface(DetallePedido)
     list_columns = ["pedido", "producto", "cantidad", "precio_unitario"]
+    add_columns = ["pedido", "producto", "cantidad"]
+    edit_columns = ["producto", "cantidad", "precio_unitario"]
+
+    def pre_add(self, item):
+        if item.cantidad < 1:
+            raise ValueError("La cantidad debe ser mayor a 0")
+        if not item.producto.activo:
+            raise ValueError("El producto no está activo")
+        item.precio_unitario = item.producto.precio
+
+    def pre_update(self, item):
+        if item.cantidad < 1 or item.precio_unitario < 0:
+            raise ValueError("Cantidad o precio inválidos")
 
 
 class PagoView(ModelView):
     datamodel = SQLAInterface(Pago)
     list_columns = ["pedido", "monto", "fecha", "metodo"]
+    add_columns = ["pedido", "monto", "fecha", "metodo"]
     add_form_extra_fields = {"metodo": SelectField("Método", choices=METODOS)}
     edit_form_extra_fields = {"metodo": SelectField("Método", choices=METODOS)}
+
+    edit_columns = ["monto", "fecha", "metodo"]
+
+    def _validar(self, item):
+        pedido = item.pedido
+        if item.monto <= 0:
+            raise ValueError("El monto debe ser mayor a 0")
+        otros = sum(p.monto for p in pedido.pagos if p is not item)
+        saldo = pedido.total() - otros
+        if item.monto > saldo:
+            raise ValueError(f"El monto excede el saldo ({saldo})")
+
+    pre_add = _validar
+    pre_update = _validar
 
 
 class PedidoView(ModelView):
@@ -56,8 +84,9 @@ class PedidoView(ModelView):
     }
 
     def pre_add(self, item):
-        if item.fecha_entrega < date.today():
-            raise ValueError("La fecha de entrega no puede ser anterior a hoy")
+        if item.fecha_entrega < (item.fecha or date.today()):
+            raise ValueError(
+                "La fecha de entrega no puede ser anterior a la del pedido")
 
     pre_update = pre_add
 
