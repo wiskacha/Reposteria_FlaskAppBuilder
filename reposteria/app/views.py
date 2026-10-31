@@ -112,6 +112,7 @@ def page_not_found(e):
     )
 
 
+from . import reportes  # noqa
 CRUD = ["can_list", "can_show", "can_add", "can_edit", "can_delete"]
 PERMISOS_VENDEDOR = {
     # vistas
@@ -120,12 +121,15 @@ PERMISOS_VENDEDOR = {
     "DetallePedidoView": CRUD,
     "PagoView": CRUD,
     "ProductoView": ["can_list", "can_show"],
+    "ReportesView": ["can_ventas", "can_productos", "can_saldos"],
     # menús (por etiqueta)
     "Clientes": ["menu_access"],
     "Ventas": ["menu_access"],
     "Pedidos": ["menu_access"],
-    "Detalles de pedido": ["menu_access"],
-    "Pagos": ["menu_access"],
+    "Reportes": ["menu_access"],
+    "Ventas por fechas": ["menu_access"],
+    "Productos más vendidos": ["menu_access"],
+    "Saldos por cliente": ["menu_access"],
     # perfil
     "UserDBModelView": ["can_userinfo", "userinfoedit", "resetmypassword"],
     "UserInfoEditView": ["can_this_form_get", "can_this_form_post"],
