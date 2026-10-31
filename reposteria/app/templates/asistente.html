@@ -1,0 +1,70 @@
+{% extends "appbuilder/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <h2>Asistente Virtual de Repostería</h2>
+
+            <p>
+                Consulta nuestro catálogo y recibe recomendaciones
+                de productos mediante inteligencia artificial.
+            </p>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <form method="POST">
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token }}"
+                        >
+
+                        <div class="form-group">
+                            <label for="pregunta">
+                                ¿Qué deseas consultar?
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                id="pregunta"
+                                name="pregunta"
+                                rows="4"
+                                maxlength="1000"
+                                placeholder="Ejemplo: ¿Qué torta me recomiendas para un cumpleaños?"
+                                required>{{ pregunta }}</textarea>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+                            <i class="fa fa-comments"></i>
+                            Consultar al asistente
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            {% if respuesta %}
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <strong>Respuesta del asistente</strong>
+                </div>
+
+                <div class="panel-body" style="white-space: pre-wrap;">{{ respuesta }}</div>
+            </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
