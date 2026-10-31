@@ -2,8 +2,10 @@ from flask import render_template
 from flask_appbuilder import ModelView
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 
+from datetime import date
 from . import app, appbuilder, db
-from .models import Categoria, Cliente, DetallePedido, Pago, Pedido, Producto
+from wtforms import SelectField
+from .models import ESTADOS, METODOS, Categoria, Cliente, DetallePedido, Pago, Pedido, Producto
 
 
 class CategoriaView(ModelView):
@@ -30,6 +32,8 @@ class DetallePedidoView(ModelView):
 class PagoView(ModelView):
     datamodel = SQLAInterface(Pago)
     list_columns = ["pedido", "monto", "fecha", "metodo"]
+    add_form_extra_fields = {"metodo": SelectField("Método", choices=METODOS)}
+    edit_form_extra_fields = {"metodo": SelectField("Método", choices=METODOS)}
 
 
 class PedidoView(ModelView):
@@ -40,6 +44,22 @@ class PedidoView(ModelView):
     related_views = [DetallePedidoView, PagoView]
     show_template = "appbuilder/general/model/show_cascade.html"
     edit_template = "appbuilder/general/model/edit_cascade.html"
+    add_columns = ["cliente", "fecha_entrega", "estado"]
+    edit_columns = ["cliente", "fecha_entrega", "estado"]
+    add_form_extra_fields = {"estado": SelectField("Estado", choices=ESTADOS)}
+    edit_form_extra_fields = {"estado": SelectField("Estado", choices=ESTADOS)}
+    show_columns = ["cliente", "fecha", "fecha_entrega",
+                    "estado", "total", "pagado", "saldo"]
+    label_columns = {
+        "total": "Total", "pagado": "Pagado", "saldo": "Saldo",
+        "fecha_entrega": "Fecha de entrega", "cliente": "Cliente",
+    }
+
+    def pre_add(self, item):
+        if item.fecha_entrega < date.today():
+            raise ValueError("La fecha de entrega no puede ser anterior a hoy")
+
+    pre_update = pre_add
 
 
 appbuilder.add_view(CategoriaView, "Categorías",
@@ -49,9 +69,8 @@ appbuilder.add_view(ProductoView, "Productos",
 appbuilder.add_view(ClienteView, "Clientes", icon="fa-users")
 appbuilder.add_view(PedidoView, "Pedidos",
                     icon="fa-shopping-basket", category="Ventas")
-appbuilder.add_view(DetallePedidoView, "Detalles de pedido",
-                    icon="fa-list", category="Ventas")
-appbuilder.add_view(PagoView, "Pagos", icon="fa-money", category="Ventas")
+appbuilder.add_view_no_menu(DetallePedidoView)
+appbuilder.add_view_no_menu(PagoView)
 
 
 @app.errorhandler(404)
