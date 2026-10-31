@@ -75,6 +75,12 @@ class DetallePedido(Model):
     pedido = relationship("Pedido", back_populates="detalles")
     producto = relationship("Producto")
 
+    def subtotal(self):
+        return self.cantidad * self.precio_unitario
+
+    def __repr__(self):
+        return f"{self.producto} x{self.cantidad}"
+
 
 class Pago(Model):
     __tablename__ = "pago"
@@ -84,3 +90,6 @@ class Pago(Model):
     metodo = Column(String(20), nullable=False)
     pedido_id = Column(Integer, ForeignKey("pedido.id"), nullable=False)
     pedido = relationship("Pedido", back_populates="pagos")
+
+    def __repr__(self):
+        return f"{self.metodo} ${self.monto}"
