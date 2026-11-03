@@ -1,0 +1,83 @@
+{% extends "appbuilder/base.html" %}
+
+{% block content %}
+<div class="container" style="margin-top: 30px;">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Panel de Control - Repostería</h2>
+            <p class="text-muted">Resumen general del estado del negocio y catálogos.</p>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Resumen (KPIs) -->
+    <div class="row text-center" style="margin-bottom: 30px;">
+        <div class="col-md-4">
+            <div class="panel panel-primary" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div class="panel-heading" style="background-color: #d9534f; border-color: #d9534f;">
+                    <h4><i class="fa fa-users"></i> Clientes Registrados</h4>
+                </div>
+                <div class="panel-body">
+                    <h1 style="font-weight: bold; color: #333;">{{ total_clientes }}</h1>
+                    <a href="/clienteview/list" class="btn btn-default btn-sm">Ver Clientes</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-success" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div class="panel-heading" style="background-color: #f0ad4e; border-color: #eea236;">
+                    <h4><i class="fa fa-birthday-cake"></i> Productos en Catálogo</h4>
+                </div>
+                <div class="panel-body">
+                    <h1 style="font-weight: bold; color: #333;">{{ total_productos }}</h1>
+                    <a href="/productoview/list" class="btn btn-default btn-sm">Ver Catálogo</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-info" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div class="panel-heading" style="background-color: #337ab7; border-color: #2e6da4;">
+                    <h4><i class="fa fa-shopping-basket"></i> Total de Pedidos</h4>
+                </div>
+                <div class="panel-body">
+                    <h1 style="font-weight: bold; color: #333;">{{ total_pedidos }}</h1>
+                    <a href="/pedidoview/list" class="btn btn-default btn-sm">Gestionar Pedidos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default" style="padding: 20px; border-radius: 8px;">
+                <h4 class="text-center" style="font-weight: bold; margin-bottom: 20px;">Estado de los Pedidos</h4>
+                <canvas id="pedidosChart" width="400" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('pedidosChart').getContext('2d');
+    const pedidosChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Pendientes', 'Entregados', 'Cancelados'],
+            datasets: [{
+                data: [{{ pendientes }}, {{ entregados }}, {{ cancelados }}],
+                backgroundColor: ['#f0ad4e', '#5cb85c', '#d9534f'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+{% endblock %}
