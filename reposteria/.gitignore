@@ -18,3 +18,8 @@ app.db
 .idea
 .vscode
 *.sublime*
+
+
+.env
+.env.*
+!.env.example
