@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 SECRET_KEY = "cambia-esta-clave-por-una-segura"
 
-SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:@localhost/reposteria"
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:password@localhost:3306/reposteria"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 CSRF_ENABLED = True
