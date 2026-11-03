@@ -3,6 +3,8 @@ from flask import Flask, render_template, redirect, url_for
 from flask_appbuilder import AppBuilder, Model, IndexView, expose
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user
+from flask import send_from_directory
+import os
 
 logging.basicConfig(
     format="%(asctime)s:%(levelname)s:%(name)s:%(message)s"
@@ -59,6 +61,15 @@ with app.app_context():
     from . import asistente_ia
 
     db.create_all()
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/x-icon'
+    )
 
 
 @app.errorhandler(404)

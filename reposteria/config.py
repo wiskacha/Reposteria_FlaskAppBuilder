@@ -14,7 +14,7 @@ CSRF_ENABLED = True
 AUTH_TYPE = AUTH_DB
 
 APP_NAME = "Sistema de Gestión de Repostería"
-
+APP_ICON = "/static/favicon.ico"
 BABEL_DEFAULT_LOCALE = "es"
 BABEL_DEFAULT_FOLDER = "translations"
 

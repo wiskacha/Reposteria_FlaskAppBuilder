@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Sistema de Repostería</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href="{{url_for('appbuilder.static',filename='css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('appbuilder.static',filename='css/fontawesome/fontawesome.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('appbuilder.static',filename='css/fontawesome/solid.min.css')}}" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #fdf2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 15px;
+        }
+        .panel {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(217, 83, 79, 0.15);
+            background: #ffffff;
+            overflow: hidden;
+        }
+        .panel-heading {
+            background-color: #d9534f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .panel-body {
+            padding: 30px;
+        }
+        .form-control {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #d9534f;
+            border-color: #d43f3a;
+            color: white;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #c9302c;
+        }
+        .help-block {
+            color: #737373;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .has-error .form-control {
+            border-color: #a94442;
+        }
+        .help-inline {
+            color: #a94442;
+            font-size: 12px;
+        }
+        /* Estilo para el mensaje de error flash */
+        .alert-danger {
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            color: #a94442;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="text-center" style="margin-bottom: 25px;">
+            <h2 style="color: #d9534f; font-weight: bold; margin-top: 0;">Sistema de Repostería</h2>
+            <p style="color: #777;">Inicia sesión para gestionar el panel</p>
+        </div>
+        
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="font-weight: bold; font-size: 18px; margin: 0;">
+                    <i class="fa fa-lock"></i> Acceso Restringido
+                </h3>
+            </div>
+            <div class="panel-body">
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category if category != 'message' else 'danger' }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form class="form" action="" method="post" name="login">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="help-block">Introduzca su usuario y contraseña:</div>
+                    
+                    <div class="form-group {% if form.errors.username %}has-error{% endif %}">
+                        <label for="username">Usuario:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            {{ form.username(size=80, class="form-control", autofocus=true) }}
+                        </div>
+                        {% for error in form.errors.get('username', []) %}
+                            <span class="help-inline">[{{ error }}]</span><br>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group {% if form.errors.password %}has-error{% endif %}">
+                        <label for="password">Contraseña:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                            {{ form.password(size=80, class="form-control") }}
+                        </div>
+                        {% for error in form.errors.get('password', []) %}
+                            <span class="help-inline">[{{ error }}]</span><br>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <input class="btn btn-primary" type="submit" value="Iniciar Sesión">
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
